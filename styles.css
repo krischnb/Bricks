@@ -14,15 +14,10 @@ html, body{
     display:flex;
     justify-content: center;
     align-items: center;
+    background-color: #0095DD;
 }
-
 .gamePanel{
-    height: 600px;
-    width: 1200px;
-    border: 3px solid red;
-}
-
-#brickCanvas{
-    height: inherit;
-    width: inherit;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(222, 217, 207, 0.672);
 }
