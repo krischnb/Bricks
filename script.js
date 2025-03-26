@@ -11,7 +11,7 @@ var ballColor = "#0095DD";
 
 // Paddle variables
 var paddleHeight = 10;
-var paddleWidth = 75;
+var paddleWidth = 100;
 var paddleX = (canvas.width - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
@@ -92,6 +92,8 @@ function drawBricks() {
     }
 }
 
+var score = 0;
+
 // Collision detection with bricks
 function collisionDetection() {
     for (var c = 0; c < brickColumnCount; c++) {
@@ -101,14 +103,37 @@ function collisionDetection() {
                 if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                     dy = -dy;
                     b.status = 0;
+                    score++;
                 }
+            }
+            if (score == brickRowCount * brickColumnCount) {
+                alert("YOU WIN, CONGRATULATIONS!");
+                document.location.reload();
             }
         }
     }
 }
 
+
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+score, 8, 20);
+}
+
+
+
 // Draw everything (ball, paddle, bricks)
+var gameInterval;
+var gamePaused = false;
+
+
+function gameStart(){ // pause game
+    gamePaused = true;
+}
 function draw() {
+    if (gamePaused) return; // Stop the game loop if the game is paused
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
@@ -129,7 +154,15 @@ function draw() {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
         } else {
-            window.location.reload();
+            gamePaused = true; // Pause the game
+            Swal.fire({
+                title: 'You lost!',
+                text: 'Do you want to continue?',
+                icon: 'error',
+                confirmButtonText: 'Yes'
+            }).then(function() {
+                window.location.reload();
+            });
         }
     }
 
@@ -140,9 +173,10 @@ function draw() {
         paddleX -= 7;
     }
 
+    drawScore();
     // Request the next frame
     requestAnimationFrame(draw);
 }
 
 // Start the game
-draw();
+gameInterval = requestAnimationFrame(draw);
