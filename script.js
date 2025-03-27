@@ -1,29 +1,40 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
+
 // Ball variables
-var x = canvas.width / 2;
-var y = canvas.height - 30;
-var dx = 2;
-var dy = -2;
+var x = canvasWidth / 2;
+var y = canvasHeight - 30;
+var dx = 6;
+var dy = -6;
 var ballRadius = 10;
 var ballColor = "#0095DD";
 
 // Paddle variables
 var paddleHeight = 10;
 var paddleWidth = 100;
-var paddleX = (canvas.width - paddleWidth) / 2;
+var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
 // Brick variables
-var brickRowCount = 3;
-var brickColumnCount = 5;
-var brickWidth = 75;
-var brickHeight = 20;
-var brickPadding = 10;
-var brickOffsetTop = 30;
-var brickOffsetLeft = 30;
+
+
+// Number of rows and columns of bricks
+const brickRowCount = 6;
+const brickColumnCount = 5;
+
+// Brick calculations based on canvas size (using only the top half of the canvas height for bricks)
+const brickWidth = (canvasWidth - (brickColumnCount + 1) * 10) / brickColumnCount; // 10 is the margin/padding between bricks
+const brickHeight = (canvasHeight / 2 - 50) / brickRowCount; // Use only half of the canvas height (50px margin from the top)
+
+// Padding and offset for bricks
+const brickPadding = 10;
+const brickOffsetTop = 40;  // Start drawing bricks 30px from the top
+const brickOffsetLeft = 10; // Start drawing bricks 30px from the left
+
 var bricks = [];
 
 // Initialize the bricks
@@ -40,17 +51,17 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 // Keydown and Keyup handler
 function keyDownHandler(e) {
-    if (e.keyCode == 39) {
+    if (e.keyCode == 39 || e.keyCode == 68) {
         rightPressed = true;
-    } else if (e.keyCode == 37) {
+    } else if (e.keyCode == 37 || e.keyCode == 65) {
         leftPressed = true;
     }
 }
 
 function keyUpHandler(e) {
-    if (e.keyCode == 39) {
+    if (e.keyCode == 39 || e.keyCode == 68) {
         rightPressed = false;
-    } else if (e.keyCode == 37) {
+    } else if (e.keyCode == 37 || e.keyCode == 65) {
         leftPressed = false;
     }
 }
@@ -93,6 +104,7 @@ function drawBricks() {
 }
 
 var score = 0;
+var gameOver = false;
 
 // Collision detection with bricks
 function collisionDetection() {
@@ -107,32 +119,57 @@ function collisionDetection() {
                 }
             }
             if (score == brickRowCount * brickColumnCount) {
-                alert("YOU WIN, CONGRATULATIONS!");
-                document.location.reload();
+                gamePaused = true; // Pause 
+                // the game immediately
+                Swal.fire({
+                    title: 'You win!',
+                    text: 'Do you want to continue?',
+                    icon: 'success',
+                    confirmButtonText: 'Yes'
+                }).then(function () {
+                    // This will also trigger when the user clicks outside the alert
+                    window.location.reload();
+                });
             }
         }
     }
 }
 
-
+// Draw the score
 function drawScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText("Score: "+score, 8, 20);
+    ctx.fillText("Score: " + score, 8, 20);
 }
 
-
-
-// Draw everything (ball, paddle, bricks)
-var gameInterval;
+// Game state
 var gamePaused = false;
+var gameStarted = false; // Keeps track of the game state
+var lastTime = performance.now(); // Track time to maintain game consistency when paused
+
+// Function to start/resume the game
 
 
-function gameStart(){ // pause game
-    gamePaused = true;
+// Function to toggle pause state
+function gamePause() {
+    gamePaused = !gamePaused;
+    if (!gamePaused) {
+        lastTime = performance.now();
+        requestAnimationFrame(draw);
+    }
 }
+
+const PADDLE_SPEED = 12; // Paddle speed at 60 FPS
+const FPS = 60;
+const frameTime = 1000 / FPS; // 1000ms divided by 60 frames per second
+
+// Draw function (game loop)
 function draw() {
-    if (gamePaused) return; // Stop the game loop if the game is paused
+    if (gamePaused) return; // Don't proceed with the game loop if paused
+
+    let now = performance.now();
+    let deltaTime = (now - lastTime) / (1000 / 60); // Normalize delta time to 60 FPS
+    lastTime = now;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
@@ -140,9 +177,9 @@ function draw() {
     drawPaddle();
     collisionDetection();
 
-    // Ball movement
-    x += dx;
-    y += dy;
+    // Ball movement (frame rate independent)
+    x += dx * deltaTime;
+    y += dy * deltaTime;
 
     // Ball collision with walls
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -154,29 +191,36 @@ function draw() {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
         } else {
-            gamePaused = true; // Pause the game
+            gamePaused = true; // Pause the game immediately on loss
             Swal.fire({
                 title: 'You lost!',
                 text: 'Do you want to continue?',
                 icon: 'error',
                 confirmButtonText: 'Yes'
-            }).then(function() {
+            }).then(function () {
                 window.location.reload();
             });
         }
     }
 
-    // Paddle movement
+    // Paddle movement (frame rate independent)
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
-        paddleX += 7;
+        paddleX += PADDLE_SPEED * deltaTime;
     } else if (leftPressed && paddleX > 0) {
-        paddleX -= 7;
+        paddleX -= PADDLE_SPEED * deltaTime;
     }
 
     drawScore();
-    // Request the next frame
+
+    // Request the next animation frame
     requestAnimationFrame(draw);
 }
 
-// Start the game
-gameInterval = requestAnimationFrame(draw);
+// Start the game loop when the page loads
+requestAnimationFrame(draw);
+
+document.addEventListener("keydown", function (e) {
+    if (e.keyCode == 80) { // p
+        gamePause();
+    }
+});

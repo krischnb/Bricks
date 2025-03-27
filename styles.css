@@ -30,17 +30,24 @@ html, body{
     display: flex;
     flex-direction: row;
     justify-content:  center;
+    gap: 20px;
 }
-.playBtn{
+.btnCont div{
     display:flex;
     justify-content: center;
     align-items: center;
-    height: 60px;
-    width: 150px;
+    height: 50px;
+    width: 180px;
     font-size: 22px;
     font-family: sans-serif;
     background-color: rgba(222, 217, 207, 0.672);
     border-radius: 16px;
     color: #0095DD;
     cursor: pointer;
+    user-select: none;
+    transition-duration: 0.2s;
+}
+.btnCont div:hover{
+    background-color: rgb(255, 255, 255);
+    transition-duration: 0.2s;
 }
