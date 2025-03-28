@@ -7,10 +7,10 @@ const canvasHeight = canvas.height;
 // Ball variables
 var x = canvasWidth / 2;
 var y = canvasHeight - 30;
-var dx = 6;
-var dy = -6;
+var dx = 5;
+var dy = -5;
 var ballRadius = 10;
-var ballColor = "#0095DD";
+var ballColor = "white";
 
 // Paddle variables
 var paddleHeight = 10;
@@ -23,17 +23,17 @@ var leftPressed = false;
 
 
 // Number of rows and columns of bricks
-const brickRowCount = 6;
-const brickColumnCount = 5;
+const brickRowCount = 5;
+const brickColumnCount = 6;
 
 // Brick calculations based on canvas size (using only the top half of the canvas height for bricks)
 const brickWidth = (canvasWidth - (brickColumnCount + 1) * 10) / brickColumnCount; // 10 is the margin/padding between bricks
 const brickHeight = (canvasHeight / 2 - 50) / brickRowCount; // Use only half of the canvas height (50px margin from the top)
 
 // Padding and offset for bricks
-const brickPadding = 10;
+const brickPadding = 12;
 const brickOffsetTop = 40;  // Start drawing bricks 30px from the top
-const brickOffsetLeft = 10; // Start drawing bricks 30px from the left
+const brickOffsetLeft = 6; // Start drawing bricks 30px from the left
 
 var bricks = [];
 
@@ -127,9 +127,9 @@ function collisionDetection() {
                     icon: 'success',
                     confirmButtonText: 'Yes'
                 }).then(function () {
-                    // This will also trigger when the user clicks outside the alert
                     window.location.reload();
                 });
+                return;
             }
         }
     }
