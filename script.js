@@ -151,12 +151,22 @@ var lastTime = performance.now(); // Track time to maintain game consistency whe
 
 
 // Function to toggle pause state
+const pauseMsg = document.querySelector(".pauseMsg");
+
 function gamePause() {
+
     gamePaused = !gamePaused;
+
+    if (gamePaused)
+        pauseMsg.classList.add("active");
+    else
+        pauseMsg.classList.remove("active");
     if (!gamePaused) {
         lastTime = performance.now();
         requestAnimationFrame(draw);
     }
+
+
 }
 
 const PADDLE_SPEED = 12; // Paddle speed at 60 FPS
@@ -220,7 +230,7 @@ function draw() {
 requestAnimationFrame(draw);
 
 document.addEventListener("keydown", function (e) {
-    if (e.keyCode == 80) { // p
+    if (e.keyCode == 80) { // pause btn
         gamePause();
     }
 });

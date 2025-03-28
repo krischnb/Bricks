@@ -15,15 +15,57 @@ html, body{
     justify-content: center;
     align-items: center;
     background-color: #0095DD;
-}
-.gamePanel{
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+.gamePanel{
+    position: relative;
+    border-radius: 10px;
+}
+
+.pauseMsg{
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: inherit;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+    color: white;
+    user-select: none;
+}
+.active{
+    display: flex !important;
+    animation: fadeIn 0.5s forwards
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.pauseMsg h1{
+    font-size: 40px;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+.pauseMsg span{
+    font-family: sans-serif;
+    font-size: 20px;
+}
 #myCanvas{
     padding: 10px;
-    border-radius: 10px;
+    border-radius: inherit;
     background-color: rgba(222, 217, 207, 0.672);
 }
 .btnCont{
