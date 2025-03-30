@@ -74,10 +74,7 @@ html, body{
     justify-content:  center;
     gap: 20px;
 }
-.btnCont div{
-    display:flex;
-    justify-content: center;
-    align-items: center;
+.btnCont button{
     height: 50px;
     width: 180px;
     font-size: 22px;
@@ -88,8 +85,46 @@ html, body{
     cursor: pointer;
     user-select: none;
     transition-duration: 0.2s;
+    border: none;
 }
-.btnCont div:hover{
+.btnCont button:hover{
     background-color: rgb(255, 255, 255);
     transition-duration: 0.2s;
+}
+.btnCont button:disabled{
+    opacity: 0.5;
+    cursor: default;
+    background-color: rgba(222, 217, 207, 0.672) !important;
+}
+
+/* Sweet alert */
+.swal2-title{
+    font-family: sans-serif;
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+.swal2-html-container{
+    font-family: sans-serif;
+    font-weight: 400;
+}
+.swal2-confirm{
+    background-color: #0095DD;
+}
+/* Game info - Custom css */
+.info-title { 
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.info-underline {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 10px 0;
+}
+.info-list {
+    text-align: left;
+    font-size: 16px;
+    padding-left: 20px;
+    line-height: 1.6;
 }

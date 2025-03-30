@@ -147,14 +147,12 @@ function drawScore() {
 var gamePaused = false;
 var lastTime = performance.now(); // Track time to maintain game consistency when paused
 
-// Function to start/resume the game
 
+const playBtn = document.querySelector(".playBtn");
+const pauseBtn = document.querySelector(".pauseBtn");
 
-// Function to toggle pause state
 const pauseMsg = document.querySelector(".pauseMsg");
-
 function gamePause() {
-
     gamePaused = !gamePaused;
 
     if (gamePaused)
@@ -170,10 +168,11 @@ function gamePause() {
 }
 var gameStarted = false;
 function gameStart() {
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
     gameStarted = true;
     lastTime = performance.now();
     requestAnimationFrame(draw);
-
 }
 
 
@@ -197,7 +196,7 @@ function draw() {
     drawPaddle();
 
     if (!gameStarted) return;
-    
+
     // Ball movement (frame rate independent)
     x += dx * deltaTime;
     y += dy * deltaTime;
@@ -239,10 +238,40 @@ function draw() {
 }
 
 // Start the game loop when the page loads
-requestAnimationFrame(draw);
 
+function rules() {
+    Swal.fire({
+        title: 'Game Info',
+        html: `
+            <p class="info-title">
+                <strong>Objective:</strong>
+            </p>
+            
+            <ul class="info-list">
+                <li>Destroy all the bricks to win the game.</li>
+                <li>Use the paddle to bounce the ball.</li>
+                <li>If the ball falls, you lose and the game ends.</li>
+            </ul>
+
+            <hr class="info-underline">
+            <p class="info-title">Keybinds:</p>
+            <ul class="info-list">                
+                <li><strong>WASD</strong> or <strong>arrow keys</strong> – Move the paddle</li>
+                <li><strong>Enter</strong> or <strong>Space</strong> – Start the game</li>
+                <li><strong>P</strong> – Pause or Resume the game</li>
+            </ul>
+        `,
+        confirmButtonText: 'Got it!',
+    });
+}
 document.addEventListener("keydown", function (e) {
-    if (e.keyCode == 80) { // pause btn
+    if (e.keyCode == 80 && pauseBtn.disabled == false) { // pause btn
         gamePause();
+    }
+    if (e.keyCode == 32 || e.keyCode == 13 && playBtn.disabled == false) { // space ali enter
+        gameStart()
+    }
+    if (e.keyCode == 73){
+        rules();
     }
 });
