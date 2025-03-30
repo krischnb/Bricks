@@ -23,8 +23,8 @@ var leftPressed = false;
 
 
 // Number of rows and columns of bricks
-const brickRowCount = 5;
-const brickColumnCount = 6;
+const brickRowCount = 3;
+const brickColumnCount = 5;
 
 // Brick calculations based on canvas size (using only the top half of the canvas height for bricks)
 const brickWidth = (canvasWidth - (brickColumnCount + 1) * 10) / brickColumnCount; // 10 is the margin/padding between bricks
@@ -120,6 +120,7 @@ function collisionDetection() {
             }
             if (score == brickRowCount * brickColumnCount) {
                 gamePaused = true; // Pause 
+                gameStarted = false;
                 // the game immediately
                 Swal.fire({
                     title: 'You win!',
@@ -144,7 +145,6 @@ function drawScore() {
 
 // Game state
 var gamePaused = false;
-var gameStarted = false; // Keeps track of the game state
 var lastTime = performance.now(); // Track time to maintain game consistency when paused
 
 // Function to start/resume the game
@@ -168,6 +168,14 @@ function gamePause() {
 
 
 }
+var gameStarted = false;
+function gameStart() {
+    gameStarted = true;
+    lastTime = performance.now();
+    requestAnimationFrame(draw);
+
+}
+
 
 const PADDLE_SPEED = 12; // Paddle speed at 60 FPS
 const FPS = 60;
@@ -177,16 +185,19 @@ const frameTime = 1000 / FPS; // 1000ms divided by 60 frames per second
 function draw() {
     if (gamePaused) return; // Don't proceed with the game loop if paused
 
+
     let now = performance.now();
     let deltaTime = (now - lastTime) / (1000 / 60); // Normalize delta time to 60 FPS
     lastTime = now;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    collisionDetection();
     drawBricks();
     drawBall();
     drawPaddle();
-    collisionDetection();
 
+    if (!gameStarted) return;
+    
     // Ball movement (frame rate independent)
     x += dx * deltaTime;
     y += dy * deltaTime;
@@ -202,6 +213,7 @@ function draw() {
             dy = -dy;
         } else {
             gamePaused = true; // Pause the game immediately on loss
+            gameStarted = false;
             Swal.fire({
                 title: 'You lost!',
                 text: 'Do you want to continue?',
