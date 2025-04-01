@@ -19,21 +19,19 @@ var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
-// Brick variables
-
-
 // Number of rows and columns of bricks
-const brickRowCount = 3;
-const brickColumnCount = 5;
+const brickRowCount = 4;
+const brickColumnCount = 8;
 
-// Brick calculations based on canvas size (using only the top half of the canvas height for bricks)
 const brickWidth = (canvasWidth - (brickColumnCount + 1) * 10) / brickColumnCount; // 10 is the margin/padding between bricks
 const brickHeight = (canvasHeight / 2 - 50) / brickRowCount; // Use only half of the canvas height (50px margin from the top)
 
 // Padding and offset for bricks
 const brickPadding = 12;
 const brickOffsetTop = 40;  // Start drawing bricks 30px from the top
-const brickOffsetLeft = 6; // Start drawing bricks 30px from the left
+const brickOffsetLeft = 15; // Start drawing bricks 30px from the left
+
+
 
 var bricks = [];
 
@@ -84,7 +82,30 @@ function drawPaddle() {
     ctx.closePath();
 }
 
-// Draw the bricks
+const redBloon = document.getElementById("redBloon");
+const yellowBloon = document.getElementById("yellowBloon");
+const greenBloon = document.getElementById("greenBloon");
+const blueBloon = document.getElementById("blueBloon");
+
+for (var c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (var r = 0; r < brickRowCount; r++) {
+        let randomNumber = Math.floor(Math.random() * 4) + 1;
+        let img;
+        switch(randomNumber) {
+            case 1: img = redBloon;
+                break;
+            case 2: img = greenBloon;
+                break;
+            case 3: img = blueBloon;
+                break;
+            case 4: img = yellowBloon;
+                break;
+        }
+        bricks[c][r] = { x: 0, y: 0, status: 1, bloonImage: img };
+    }
+}
+
 function drawBricks() {
     for (var c = 0; c < brickColumnCount; c++) {
         for (var r = 0; r < brickRowCount; r++) {
@@ -94,14 +115,17 @@ function drawBricks() {
                 bricks[c][r].x = brickX;
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
-                ctx.fill();
+
+                // Use the stored image for this brick
+                let img = bricks[c][r].bloonImage;
+                ctx.drawImage(img, brickX, brickY, brickHeight, brickWidth);
+
                 ctx.closePath();
             }
         }
     }
 }
+
 
 var score = 0;
 var gameOver = false;
