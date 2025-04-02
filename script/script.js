@@ -212,6 +212,7 @@ function draw() {
         dy = -dy;
     } else if (y + dy > canvas.height - ballRadius) {
         if (x > paddleX && x < paddleX + paddleWidth) {
+            dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth);
             dy = -dy;
         } else {
             gamePaused = true;
