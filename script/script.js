@@ -10,35 +10,57 @@ var gamePaused = false;
 var lastTime = performance.now();
 
 
-// ball vars
-var x = canvasWidth / 2;
-var y = canvasHeight - 30;
-var dx = 5;
-var dy = -5;
-var ballRadius = 10;
-var ballColor = "#0095DD";
-
 // paddle vars
 var paddleHeight = 10;
-var paddleWidth = 100;
+var paddleWidth = 120;
 var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
-// Bricks - Baloni 
+// ball vars
+var dx = 5;
+var dy = -8;
+var ballRadius = 10;
+var ballColor = "#0095DD";
+var x = canvasWidth / 2;
+var y = canvasHeight - (paddleHeight + 10 + ballRadius);  // startna Y pozicija zoge tocno na platformi,
+                                                         // paddle height + 10, ker je platforma za 10px odmaknjena od tal. 
 
-const redBloon = document.getElementById("redBloon");
-const yellowBloon = document.getElementById("yellowBloon");
-const greenBloon = document.getElementById("greenBloon");
-const blueBloon = document.getElementById("blueBloon");
-const popBloon = document.getElementById("popBloon");
+// bricks
+const redBloon = new Image();
+const blueBloon = new Image();
+const yellowBloon = new Image();
+const greenBloon = new Image();
+const popBloon = new Image();
+
+redBloon.src = "../assets/redBloon.png";
+blueBloon.src = "../assets/blueBloon.png";
+yellowBloon.src = "../assets/yellowBloon.png";
+greenBloon.src = "../assets/greenBloon.png";
+popBloon.src = "../assets/pop.png";
+
+let imagesLoaded = 0;
+
+function imageLoaded() { // funkcija, ki preverja ce so vse slike nalozene. Vstop kdr se slika nalozi
+    imagesLoaded++;
+    if (imagesLoaded === 5) { // kadar so vse slike nalozene, se zacne game loop
+        requestAnimationFrame(draw); 
+    }
+}
+
+redBloon.onload = imageLoaded;
+blueBloon.onload = imageLoaded;
+yellowBloon.onload = imageLoaded;
+greenBloon.onload = imageLoaded;
+popBloon.onload = imageLoaded;
+
 
 // stevilo vrstic in stolpcev (bricks - balonov)
 const brickRowCount = 4;
 const brickColumnCount = 12;
 
-const brickHeight = redBloon.naturalHeight / 1.5; // taprava visina in sirina balona, najmanjsega balona, zato da bodo vsi enako veliki ane
-const brickWidth = redBloon.naturalWidth / 1.5; // za vecati al manjsati sliko delimo obe dimenziji z isto cifro - aspect ratio
+const brickHeight = 127 / 1.5; // taprava visina in sirina balona, najmanjsega balona, zato da bodo vsi enako veliki ane
+const brickWidth = 99 / 1.5; // za vecati al manjsati sliko delimo obe dimenziji z isto cifro - aspect ratio
 
 const brickPaddingX = 10;  // margin left (posamezen balon)
 const brickPaddingY = 5;  // margin top (posamezen balon)
@@ -48,14 +70,6 @@ const topPadding = 40;     // padding top od celotnega canvasa
 const totalBricksWidth = brickColumnCount * brickWidth + (brickColumnCount - 1) * brickPaddingX;
 const brickOffsetLeft = (canvasWidth - totalBricksWidth) / 2; // formula za centrirat vrstico bricksev
 
-var bricks = [];
-
-for (var c = 0; c < brickColumnCount; c++) {
-    bricks[c] = [];
-    for (var r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y: 0, status: 1 };
-    }
-}
 
 function drawBall() {
     ctx.beginPath();
@@ -67,12 +81,14 @@ function drawBall() {
 
 function drawPaddle() {
     ctx.beginPath();
-    ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    ctx.rect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
 }
 
+
+var bricks = [];
 for (var c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
     for (var r = 0; r < brickRowCount; r++) {
@@ -186,6 +202,7 @@ const FPS = 60;
 const frameTime = 1000 / FPS; 
 
 // game loop
+var pada = false;
 function draw() {
     if (gamePaused) return; 
 
@@ -205,21 +222,30 @@ function draw() {
     x += dx * deltaTime;
     y += dy * deltaTime;
 
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) { // kdr se takne zida, preprecimo da gre skozi
         dx = -dx;
     }
-    if (y + dy < ballRadius) {
+    if (y + dy < ballRadius) { // ce se dotakne zida, obrnemo smer
         dy = -dy;
-    } else if (y + dy > canvas.height - ballRadius) {
-        if (x > paddleX && x < paddleX + paddleWidth) {
-            dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth);
-            dy = -dy;
+    } else if (y + dy > canvas.height - paddleHeight - 10){ // ce se zoga nahaja v levelu platforme
+        if (x > paddleX && x < paddleX + paddleWidth) { // ce se zoga med zacetkom in koncom platforme
+            dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
+            dy = -dy; // bo sla zoga navzgor (obrnemo kot v katerega bo potekala)
         } else {
-            gamePaused = true;
-            gameStarted = false;
+            pada = true; // flag, da zoga pada - zguba
+        }
+    }
+    if (pada) { // ce zoga pada
+        if (y + ballRadius < canvas.height) { // ko se blizamo dnu, se hitrost povecuje
+            y += 0.1; 
+        } else {
+            y = canvas.height - ballRadius; 
+            gamePaused = true; 
+            gameStarted = false; 
             youLose();
         }
     }
+
 
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
         paddleX += PADDLE_SPEED * deltaTime;
@@ -232,4 +258,3 @@ function draw() {
     // poklice nsledn frame, klic game loopa
     requestAnimationFrame(draw);
 }
-

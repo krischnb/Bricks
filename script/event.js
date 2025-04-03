@@ -33,7 +33,8 @@ let mouseHeld = false;
 canvas.addEventListener("mousedown", () => mouseHeld = true);
 document.addEventListener("mouseup", () => mouseHeld = false);
 document.addEventListener("mousemove", (e) => {
-    if (!mouseHeld) return;
+    if(!gameStarted) return; // zato da ne mores premikat platforme pred zacetkom igre
+    if (!mouseHeld ) return;
     let x = e.clientX - canvas.getBoundingClientRect().left;
     paddleX = Math.max(0, Math.min(x - paddleWidth / 2, canvasWidth - paddleWidth));
 });

@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Bloon Pop</title>
     <link rel="stylesheet" href="styles/styles.css">
@@ -6,22 +7,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="assets/favIcon.png">
 </head>
-<body onload="draw()">
-    <img src="assets/oblak1.png" id="oblak1">
-    <img src="assets/oblak2.png" id="oblak2">
-    <img src="assets/oblak3.png" id="oblak3">
-    <img src="assets/oblak4.png" id="oblak4">
-    <img src="assets/oblak5.png" id="oblak5" onclick="credits()">
+<body>
+    <img src="assets/oblak1.png" id="oblak1" alt="oblak">
+    <img src="assets/oblak2.png" id="oblak2" alt="oblak">
+    <img src="assets/oblak3.png" id="oblak3" alt="oblak">
+    <img src="assets/oblak4.png" id="oblak4" alt="oblak">
+    <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()">
 
     <div class="glavni">
         <div class="gamePanel">
-            <canvas id="myCanvas" width="1000" height="700">
-                <img src="assets/redBloon.png" id="redBloon">
-                <img src="assets/blueBloon.png" id="blueBloon">
-                <img src="assets/yellowBloon.png" id="yellowBloon">
-                <img src="assets/greenBloon.png" id="greenBloon">
-                <img src="assets/pop.png" id="popBloon">
-            </canvas>
+            <canvas id="myCanvas" width="1000" height="700"></canvas>
             <div class="pauseMsg">
                 <h1>Paused</h1>
                 <span>Press the Pause button or 'P' to resume.</span>

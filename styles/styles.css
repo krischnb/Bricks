@@ -9,8 +9,8 @@ html, body{
 }
 
 .glavni{
-    height:100%;
-    width:100%;
+    height:100vh;
+    width:100vw;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -23,6 +23,8 @@ html, body{
     position: relative;
     border-radius: 10px;
     background-color: rgba(222, 217, 207, 0.85);
+    height: 700px;
+    width: 1000px;
 }
 .pauseMsg{
     display: none;
@@ -64,7 +66,6 @@ html, body{
     font-size: 20px;
 }
 #myCanvas{
-    padding: 10px;
     border-radius: inherit;
 }
 .btnCont{
