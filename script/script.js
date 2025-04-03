@@ -33,11 +33,11 @@ const yellowBloon = new Image();
 const greenBloon = new Image();
 const popBloon = new Image();
 
-redBloon.src = "../assets/redBloon.png";
-blueBloon.src = "../assets/blueBloon.png";
-yellowBloon.src = "../assets/yellowBloon.png";
-greenBloon.src = "../assets/greenBloon.png";
-popBloon.src = "../assets/pop.png";
+redBloon.src = "assets/redBloon.png";
+blueBloon.src = "assets/blueBloon.png";
+yellowBloon.src = "assets/yellowBloon.png";
+greenBloon.src = "assets/greenBloon.png";
+popBloon.src = "assets/pop.png";
 
 let imagesLoaded = 0;
 
