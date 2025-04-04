@@ -18,7 +18,7 @@ var rightPressed = false;
 var leftPressed = false;
 
 // ball vars
-var dx = 5;
+var dx = Math.floor(Math.random() * 6) + 4;
 var dy = -8;
 var ballRadius = 10;
 var ballColor = "#0095DD";
@@ -39,6 +39,12 @@ yellowBloon.src = "assets/yellowBloon.png";
 greenBloon.src = "assets/greenBloon.png";
 popBloon.src = "assets/pop.png";
 
+redBloon.onload = imageLoaded;
+blueBloon.onload = imageLoaded;
+yellowBloon.onload = imageLoaded;
+greenBloon.onload = imageLoaded;
+popBloon.onload = imageLoaded;
+
 let imagesLoaded = 0;
 
 function imageLoaded() { // funkcija, ki preverja ce so vse slike nalozene. Vstop kdr se slika nalozi
@@ -47,12 +53,6 @@ function imageLoaded() { // funkcija, ki preverja ce so vse slike nalozene. Vsto
         requestAnimationFrame(draw); 
     }
 }
-
-redBloon.onload = imageLoaded;
-blueBloon.onload = imageLoaded;
-yellowBloon.onload = imageLoaded;
-greenBloon.onload = imageLoaded;
-popBloon.onload = imageLoaded;
 
 
 // stevilo vrstic in stolpcev (bricks - balonov)
@@ -126,18 +126,33 @@ function drawBricks() {
 
     // iteracija skozi vse zadete balone - for each
     poppedBalloons.forEach(pb => {
-        let elapsed = (performance.now() - pb.time) / 200; // nam pove koliko casa je minilo (od 200ms), od kar je bil balon pocen 
-        if (elapsed < 1) {                                 // ves casa kot mini, nizji po opacity
-            ctx.globalAlpha = 1 - elapsed;                 // od opacity 1 se sproti niža proti 0
-            ctx.drawImage(popBloon, pb.x, pb.y, brickWidth, brickHeight);
-        }
+        let elapsed = (performance.now() - pb.time) / 250; // kolk cajta od kdr je bil balon pocen, elapsed gre od 0 do 1 v roku 250ms
+        if (elapsed < 1) {
+            ctx.globalAlpha = 1 - elapsed;
+            ctx.save();
     
+            let centerX = pb.x + brickWidth / 2; // center balona
+            let centerY = pb.y + brickHeight / 2;
+    
+            ctx.translate(centerX, centerY);
+            ctx.rotate(elapsed * (Math.PI / 5)); // v roku 250ms se bo zvrtelo 36 stopinj
+    
+            ctx.drawImage(popBloon, -brickWidth / 2, -brickHeight / 2, brickWidth, brickHeight);
+    
+            ctx.restore();
+        }
     });
+    
 
     ctx.globalAlpha = 1; // reset var
-    poppedBalloons = poppedBalloons.filter(pb => (performance.now() - pb.time) < 200);
+    poppedBalloons = poppedBalloons.filter(pb => (performance.now() - pb.time) < 250);
     // filter je kot pop, sam da ne izbrise sam najvisjih elementov, ampak ima nek pogoj
-    // zbrise elemente po 200ms
+    // zbrise elemente po 250ms
+}
+
+function playPopSound() {
+    const sound = new Audio('assets/popSound.mp3');
+    sound.play();
 }
 
 function collisionDetection() {
@@ -149,6 +164,8 @@ function collisionDetection() {
                 b.status = 0;
                 score++;
                 poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() }); // shrani pocen balon
+
+                playPopSound();
             }
         }
     }
