@@ -4,8 +4,9 @@
     <title>Bloon Pop</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/clouds.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="assets/FavIcon.png">
+    <script src="https://cdn.jsdelivr.net/npm/easytimer.js@4.5.4/dist/easytimer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <img src="assets/oblak1.png" id="oblak1" alt="oblak">
@@ -15,6 +16,14 @@
     <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()">
 
     <div class="glavni">
+        <div class="dataCont">
+            <div id="score">
+                Score: <span id="scoreVal">0</span> / <span id="scoreMax"></span>
+            </div>
+            <div id="timer">
+                Time: <span class="seconds">0.0</span> s
+            </div>
+        </div>
         <div class="gamePanel">
             <canvas id="myCanvas" width="1000" height="700"></canvas>
             <div class="pauseMsg">
@@ -29,9 +38,10 @@
         </div>
     </div>
 
-    
     <script src="script/script.js"></script>
     <script src="script/event.js"></script>
     <script src="script/alert.js"></script>
+
+
 </body>
 </html>

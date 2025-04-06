@@ -1,13 +1,19 @@
 function youWin() {
     Swal.fire({
-        title: 'You win!',
-        text: 'Do you want to continue?',
+        title: 'Congratulations!',
+        html: `
+        <ul class="credit-list">
+        <li>It took you ${decimalSeconds} seconds to win</li>
+        <li>Do you want to continue?</li> 
+        </ul>
+        `,
         icon: 'success',
-        confirmButtonText: 'Yes'
+        confirmButtonText: 'Yes',
     }).then(function () {
         window.location.reload();
     });
 }
+
 
 function youLose() {
     Swal.fire({

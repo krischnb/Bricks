@@ -29,6 +29,13 @@ function keyUpHandler(e) {
 }
 
 let mouseHeld = false;
+let decimalSeconds;
+
+timer.addEventListener('secondTenthsUpdated', function () {
+    const time = timer.getTimeValues();
+    decimalSeconds = (time.seconds + time.secondTenths / 10).toFixed(1);
+    document.querySelector('.seconds').textContent = decimalSeconds;
+});
 
 canvas.addEventListener("mousedown", () => mouseHeld = true);
 document.addEventListener("mouseup", () => mouseHeld = false);

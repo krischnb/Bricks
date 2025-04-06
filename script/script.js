@@ -9,6 +9,8 @@ var gameOver = false;
 var gamePaused = false;
 var lastTime = performance.now();
 
+// timer
+const timer = new easytimer.Timer();
 
 // paddle vars
 var paddleHeight = 10;
@@ -24,7 +26,7 @@ var ballRadius = 10;
 var ballColor = "#0095DD";
 var x = canvasWidth / 2;
 var y = canvasHeight - (paddleHeight + 10 + ballRadius);  // startna Y pozicija zoge tocno na platformi,
-                                                         // paddle height + 10, ker je platforma za 10px odmaknjena od tal. 
+// paddle height + 10, ker je platforma za 10px odmaknjena od tal. 
 
 // bricks
 const redBloon = new Image();
@@ -50,7 +52,7 @@ let imagesLoaded = 0;
 function imageLoaded() { // funkcija, ki preverja ce so vse slike nalozene. Vstop kdr se slika nalozi
     imagesLoaded++;
     if (imagesLoaded === 5) { // kadar so vse slike nalozene, se zacne game loop
-        requestAnimationFrame(draw); 
+        requestAnimationFrame(draw);
     }
 }
 
@@ -58,14 +60,15 @@ function imageLoaded() { // funkcija, ki preverja ce so vse slike nalozene. Vsto
 // stevilo vrstic in stolpcev (bricks - balonov)
 const brickRowCount = 4;
 const brickColumnCount = 12;
+document.getElementById("scoreMax").textContent = brickRowCount * brickColumnCount; // se zabelezi koliko je vseh balonov
+
 
 const brickHeight = 127 / 1.5; // taprava visina in sirina balona, najmanjsega balona, zato da bodo vsi enako veliki ane
 const brickWidth = 99 / 1.5; // za vecati al manjsati sliko delimo obe dimenziji z isto cifro - aspect ratio
 
 const brickPaddingX = 10;  // margin left (posamezen balon)
 const brickPaddingY = 5;  // margin top (posamezen balon)
-const leftPadding = 10;    // padding left od celotnega canvasa
-const topPadding = 40;     // padding top od celotnega canvasa
+const topPadding = 20;     // padding top od celotnega canvasa
 
 const totalBricksWidth = brickColumnCount * brickWidth + (brickColumnCount - 1) * brickPaddingX;
 const brickOffsetLeft = (canvasWidth - totalBricksWidth) / 2; // formula za centrirat vrstico bricksev
@@ -130,19 +133,20 @@ function drawBricks() {
         if (elapsed < 1) {
             ctx.globalAlpha = 1 - elapsed;
             ctx.save();
-    
+
             let centerX = pb.x + brickWidth / 2; // center balona
             let centerY = pb.y + brickHeight / 2;
-    
+
             ctx.translate(centerX, centerY);
             ctx.rotate(elapsed * (Math.PI / 5)); // v roku 250ms se bo zvrtelo 36 stopinj
-    
+
+
             ctx.drawImage(popBloon, -brickWidth / 2, -brickHeight / 2, brickWidth, brickHeight);
-    
+
             ctx.restore();
         }
     });
-    
+
 
     ctx.globalAlpha = 1; // reset var
     poppedBalloons = poppedBalloons.filter(pb => (performance.now() - pb.time) < 250);
@@ -165,6 +169,7 @@ function collisionDetection() {
                 score++;
                 poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() }); // shrani pocen balon
 
+                drawScore();
                 playPopSound();
             }
         }
@@ -173,18 +178,14 @@ function collisionDetection() {
     if (score === brickRowCount * brickColumnCount) {
         gamePaused = true;
         gameStarted = false;
+        timer.stop();
         youWin();
     }
 }
 
 function drawScore() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
-    ctx.fillText("Score: " + score, 8, 20);
+    document.getElementById("scoreVal").textContent = score;
 }
-
-
-
 
 const playBtn = document.querySelector(".playBtn");
 const pauseBtn = document.querySelector(".pauseBtn");
@@ -193,10 +194,14 @@ const pauseMsg = document.querySelector(".pauseMsg");
 function gamePause() {
     gamePaused = !gamePaused;
 
-    if (gamePaused)
+    if (gamePaused) {
         pauseMsg.classList.add("active");
-    else
+        timer.pause();
+    }
+    else {
         pauseMsg.classList.remove("active");
+        timer.start({precision: 'secondTenths'});
+    }
     if (!gamePaused) {
         lastTime = performance.now();
         requestAnimationFrame(draw);
@@ -209,23 +214,24 @@ function gameStart() {
     playBtn.disabled = true;
     pauseBtn.disabled = false;
     gameStarted = true;
+    timer.start({precision: 'secondTenths'}); // zacnemo timer, ko se zacne igra, vsakic 10 stotink se belezi
     lastTime = performance.now();
     requestAnimationFrame(draw);
 }
 
 
-const PADDLE_SPEED = 12; 
+const PADDLE_SPEED = 12;
 const FPS = 60;
-const frameTime = 1000 / FPS; 
+const frameTime = 1000 / FPS;
 
 // game loop
 var pada = false;
 function draw() {
-    if (gamePaused) return; 
+    if (gamePaused) return;
 
 
     let now = performance.now();
-    let deltaTime = (now - lastTime) / (1000 / 60); 
+    let deltaTime = (now - lastTime) / (1000 / 60);
     lastTime = now;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -244,7 +250,7 @@ function draw() {
     }
     if (y + dy < ballRadius) { // ce se dotakne zida, obrnemo smer
         dy = -dy;
-    } else if (y + dy > canvas.height - paddleHeight - 10){ // ce se zoga nahaja v levelu platforme
+    } else if (y + dy > canvas.height - paddleHeight - 10) { // ce se zoga nahaja v levelu platforme
         if (x > paddleX && x < paddleX + paddleWidth) { // ce se zoga med zacetkom in koncom platforme
             dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
             dy = -dy; // bo sla zoga navzgor (obrnemo kot v katerega bo potekala)
@@ -254,11 +260,12 @@ function draw() {
     }
     if (pada) { // ce zoga pada
         if (y + ballRadius < canvas.height) { // ko se blizamo dnu, se hitrost povecuje
-            y += 0.1; 
+            y += 0.1;
         } else {
-            y = canvas.height - ballRadius; 
-            gamePaused = true; 
-            gameStarted = false; 
+            y = canvas.height - ballRadius;
+            gamePaused = true;
+            gameStarted = false;
+            timer.stop();
             youLose();
         }
     }
@@ -270,7 +277,6 @@ function draw() {
         paddleX -= PADDLE_SPEED * deltaTime;
     }
 
-    drawScore();
 
     // poklice nsledn frame, klic game loopa
     requestAnimationFrame(draw);
