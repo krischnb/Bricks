@@ -1,18 +1,19 @@
 function youWin() {
     Swal.fire({
-        title: 'Congratulations!',
+        title: 'Congrats!',
         html: `
         <ul class="credit-list">
-        <li>It took you ${decimalSeconds} seconds to win</li>
-        <li>Do you want to continue?</li> 
+            <li>All balloons popped in <strong>${decimalSeconds}</strong> seconds!</li>
+            <li>Do you want to continue?</li>
         </ul>
         `,
         icon: 'success',
-        confirmButtonText: 'Yes',
+        confirmButtonText: 'Pop Again!',
     }).then(function () {
         window.location.reload();
     });
 }
+
 
 
 function youLose() {
@@ -46,9 +47,7 @@ function rules() {
     Swal.fire({
         title: 'Game Info',
         html: `
-            <p class="info-title">
-                <strong>Objective:</strong>
-            </p>
+            <p class="info-title">Objective:</p>
             
             <ul class="info-list">
                 <li>Destroy all the bricks to win the game.</li>

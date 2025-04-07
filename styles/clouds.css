@@ -13,7 +13,7 @@
     }
 }
 
-#oblak1, #oblak2, #oblak3, #oblak4, #oblak5 {
+#oblak1, #oblak2, #oblak3, #oblak4, #oblak5{
     position: fixed;
     animation: moveLeftInfinite linear infinite;
 }
@@ -33,7 +33,7 @@
     top: 60%;
     left: 70%;
     height: 200px;
-    animation-duration: 50s;
+    animation-duration: 70s;
 }
 #oblak4 {
     top: 70%;
@@ -51,4 +51,30 @@
 #oblak5:hover{
     filter: hue-rotate(90deg) brightness(0.8) saturate(3);
     transition-duration: 0.3s;
+}
+
+#oblak6{
+    animation: moveLeftInfinite2 linear infinite;
+    position: fixed;
+}
+#oblak6{
+    top: 35%;
+    height: 80px;
+    animation-duration: 60s;
+    right: -80%;
+}
+
+@keyframes moveLeftInfinite2 {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-180vw);
+    }
+    50.01% {
+        transform: translateX(10vw);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }

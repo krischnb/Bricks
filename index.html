@@ -1,40 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Bloon Pop</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/first.css">
     <link rel="stylesheet" href="styles/clouds.css">
     <link rel="icon" type="image/png" href="assets/FavIcon.png">
     <script src="https://cdn.jsdelivr.net/npm/easytimer.js@4.5.4/dist/easytimer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <img src="assets/oblak1.png" id="oblak1" alt="oblak">
     <img src="assets/oblak2.png" id="oblak2" alt="oblak">
     <img src="assets/oblak3.png" id="oblak3" alt="oblak">
     <img src="assets/oblak4.png" id="oblak4" alt="oblak">
     <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()">
+    <img src="assets/oblak6.png" id="oblak6" alt="oblak">
 
     <div class="glavni">
-        <div class="dataCont">
-            <div id="score">
-                Score: <span id="scoreVal">0</span> / <span id="scoreMax"></span>
+        <div class="firstPage activePage">
+            <div class="title">
+                Balloon pop
             </div>
-            <div id="timer">
-                Time: <span class="seconds">0.0</span> s
+            <div class="mainMenu">
+                <div class="btnContMain">
+                    <img src="assets/redBloon.png" alt="bloon">
+                    <button class="newGame" onclick="openGame()">New game</button>
+                </div>
+                <div class="btnContMain">
+                    <img src="assets/blueBloon.png" alt="bloon">
+                    <button class="resumeGame">Resume game</button>
+                </div>
+                <div class="btnContMain">
+                    <img src="assets/greenBloon.png">
+                    <button class="infoMain">Info</button>
+                </div>
+                <div class="btnContMain">
+                    <img src="assets/yellowBloon.png">
+                    <button class="settingsMain">Settings</button>
+                </div>
             </div>
         </div>
-        <div class="gamePanel">
-            <canvas id="myCanvas" width="1000" height="700"></canvas>
-            <div class="pauseMsg">
-                <h1>Paused</h1>
-                <span>Press the Pause button or 'P' to resume.</span>
+
+        <div class="gamePage">
+            <div class="dataCont">
+                <div id="score">
+                    Score: <span id="scoreVal">0</span> / <span id="scoreMax"></span>
+                </div>
+                <div id="timer">
+                    Time: <span class="seconds">0.0</span> s
+                </div>
             </div>
-        </div>
-        <div class="btnCont">
-            <button class="playBtn" onclick="gameStart()">Play</button>
-            <button class="pauseBtn" disabled onclick="gamePause()">Pause</button>
-            <button class="rules" onclick="rules()">Rules</button>
+            <div class="gamePanel">
+                <canvas id="myCanvas" width="1000" height="700"></canvas>
+                <div class="pauseMsg">
+                    <h1>Paused</h1>
+                    <span>Press the Pause button or 'P' to resume.</span>
+                </div>
+            </div>
+            <div class="btnCont">
+                <button class="playBtn" onclick="gameStart()">Play</button>
+                <button class="pauseBtn" disabled onclick="gamePause()">Pause</button>
+                <button class="rules" onclick="rules()">Rules</button>
+            </div>
         </div>
     </div>
 
@@ -44,4 +74,5 @@
 
 
 </body>
+
 </html>

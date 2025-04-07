@@ -281,3 +281,11 @@ function draw() {
     // poklice nsledn frame, klic game loopa
     requestAnimationFrame(draw);
 }
+
+const firstPage = document.querySelector(".firstPage");
+const gamePage = document.querySelector(".gamePage");
+
+function openGame(){
+    firstPage.classList.remove("activePage");
+    gamePage.classList.add("activePage");
+}

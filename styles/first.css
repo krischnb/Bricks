@@ -1,0 +1,71 @@
+.firstPage {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.title{
+    font-family: bubble;
+    font-size: 160px;
+    z-index: 10;
+    text-align: center;
+    color: rgb(210, 210, 210);
+    text-shadow: 0px 10px 10px #000000;
+    margin-bottom: 100px;
+}
+.btnContMain{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+.mainMenu{
+    font-family: font2;
+    font-size: 35px;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.mainMenu button{
+    width: 400px;
+    height: 70px;
+    border-radius: 100px;
+    border: none;
+    font-family: font2;
+    font-size: 30px;
+    color: white;
+    transition: all 0.3s ease;
+}
+.mainMenu img{
+    height: 100px;
+}
+
+.btnContMain:hover{
+    transform: scale(1.1);
+}
+.newGame {
+    background: linear-gradient(135deg, #7a1d1d, #a83232);
+    box-shadow: 0 4px 8px rgba(122, 29, 29, 0.5);
+}
+
+.resumeGame {
+    background: linear-gradient(135deg, #264f85, #4f79bd);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(38, 79, 133, 0.4);
+}
+
+.infoMain {
+    background: linear-gradient(135deg, #006400, #32cd32);
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.4);
+}
+
+.settingsMain {
+    background: linear-gradient(135deg, #b1b117, #e2e24c);
+    box-shadow: 0 4px 8px rgba(177, 177, 23, 0.4);
+}
