@@ -23,7 +23,7 @@ function youLose() {
         icon: 'error',
         confirmButtonText: 'Yes'
     }).then(function () {
-        window.location.reload();
+        resetValues();
     });
 }
 
