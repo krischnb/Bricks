@@ -60,6 +60,8 @@ function imageLoaded() {
   imagesLoaded++;
   if (imagesLoaded === 5) {
     // kadar so vse slike nalozene, se zacne game loop
+    
+    initBricks();
     requestAnimationFrame(draw);
   }
 }
@@ -85,9 +87,11 @@ function resetValues() {
   playBtn.disabled = false;
   pauseBtn.disabled = true;
 
+  initBricks();
+
   timer.reset();
   timer.stop();
-  
+
   document.getElementById("scoreVal").textContent = 0;
   document.querySelector('.seconds').textContent = "0.0";
   requestAnimationFrame(draw);
@@ -132,26 +136,29 @@ function drawPaddle() {
 }
 
 var bricks = [];
-for (var c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (var r = 0; r < brickRowCount; r++) {
-    let randomNumber = Math.floor(Math.random() * 4) + 1;
-    let img;
-    switch (randomNumber) {
-      case 1:
-        img = redBloon;
-        break;
-      case 2:
-        img = greenBloon;
-        break;
-      case 3:
-        img = blueBloon;
-        break;
-      case 4:
-        img = yellowBloon;
-        break;
+
+function initBricks() {
+  for (var c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (var r = 0; r < brickRowCount; r++) {
+      let randomNumber = Math.floor(Math.random() * 4) + 1;
+      let img;
+      switch (randomNumber) {
+        case 1:
+          img = redBloon;
+          break;
+        case 2:
+          img = greenBloon;
+          break;
+        case 3:
+          img = blueBloon;
+          break;
+        case 4:
+          img = yellowBloon;
+          break;
+      }
+      bricks[c][r] = { x: 0, y: 0, status: 1, bloonImage: img }; // random barve baloni se shranijo v 2d tabelo
     }
-    bricks[c][r] = { x: 0, y: 0, status: 1, bloonImage: img }; // random barve baloni se shranijo v 2d tabelo
   }
 }
 

@@ -10,7 +10,7 @@ function youWin() {
         icon: 'success',
         confirmButtonText: 'Pop Again!',
     }).then(function () {
-        window.location.reload();
+        resetValues();
     });
 }
 
