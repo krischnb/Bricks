@@ -44,6 +44,7 @@ function credits() {
 }
 
 function rules() {
+    if(gameClosed) return;
     Swal.fire({
         title: 'Game Info',
         html: `

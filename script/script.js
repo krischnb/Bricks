@@ -22,10 +22,11 @@ var leftPressed = false;
 // ball vars
 var dx = Math.floor(Math.random() * 6) + 4;
 var dy = -8;
-var ballRadius = 10;
+var ballRadius = 15;
 var ballColor = "#0095DD";
-var x = canvasWidth / 2;
-var y = canvasHeight - (paddleHeight + 10 + ballRadius); // startna Y pozicija zoge tocno na platformi,
+var x = paddleX - ballRadius + paddleWidth / 2;
+var y = canvasHeight - paddleHeight - 10 - ballRadius; 
+// startna Y pozicija zoge tocno na platformi,
 // paddle height + 10, ker je platforma za 10px odmaknjena od tal.
 
 // bricks
@@ -34,6 +35,7 @@ const blueBloon = new Image();
 const yellowBloon = new Image();
 const greenBloon = new Image();
 const popBloon = new Image();
+const rock = new Image();
 
 // flag, ko zoga pada, pomeni da smo zgubili, uporabno za animacijo da gre zoga pod platformo
 var pada = false;
@@ -41,24 +43,29 @@ var pada = false;
 // flag, da igra ni zaceta
 var gameStarted = false;
 
+// flag, da igra ni prikazana
+var gameClosed = true;
+
 redBloon.src = "assets/redBloon.png";
 blueBloon.src = "assets/blueBloon.png";
 yellowBloon.src = "assets/yellowBloon.png";
 greenBloon.src = "assets/greenBloon.png";
 popBloon.src = "assets/pop.png";
+rock.src = "assets/rock.png";
 
 redBloon.onload = imageLoaded;
 blueBloon.onload = imageLoaded;
 yellowBloon.onload = imageLoaded;
 greenBloon.onload = imageLoaded;
 popBloon.onload = imageLoaded;
+rock.onload = imageLoaded;
 
 let imagesLoaded = 0;
 
 function imageLoaded() {
   // funkcija, ki preverja ce so vse slike nalozene. Vstop kdr se slika nalozi
   imagesLoaded++;
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 6) {
     // kadar so vse slike nalozene, se zacne game loop
     
     initBricks();
@@ -77,7 +84,6 @@ function resetValues() {
   leftPressed = false;
   dx = Math.floor(Math.random() * 6) + 4;
   dy = -8;
-  ballRadius = 10;
   x = canvasWidth / 2;
   y = canvasHeight - (paddleHeight + 10 + ballRadius);
   pada = false;
@@ -116,9 +122,7 @@ const brickOffsetLeft = (canvasWidth - totalBricksWidth) / 2; // formula za cent
 
 function drawBall() {
   ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = ballColor;
-  ctx.fill();
+  ctx.drawImage(rock, x, y, ballRadius*2, ballRadius*2);
   ctx.closePath();
 }
 
@@ -255,6 +259,7 @@ const pauseBtn = document.querySelector(".pauseBtn");
 
 const pauseMsg = document.querySelector(".pauseMsg");
 function gamePause() {
+  if(gameClosed) return;
   gamePaused = !gamePaused;
 
   if (gamePaused) {
@@ -270,6 +275,7 @@ function gamePause() {
   }
 }
 function gameStart() {
+  if(gameClosed) return; // ce igra ni prikazana, ne mores jo zacet
   playBtn.disabled = true;
   pauseBtn.disabled = false;
   gameStarted = true;
@@ -308,9 +314,9 @@ function draw() {
   if (y + dy < ballRadius) {
     // ce se dotakne zida, obrnemo smer
     dy = -dy;
-  } else if (y + dy > canvas.height - paddleHeight - 10) {
+  } else if (y + dy > canvas.height - paddleHeight - ballRadius - 10) {
     // ce se zoga nahaja v levelu platforme
-    if (x > paddleX && x < paddleX + paddleWidth) {
+    if (x + ballRadius > paddleX && x +ballRadius < paddleX + paddleWidth) {
       // ce se zoga med zacetkom in koncom platforme
       dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
       dy = -dy; // bo sla zoga navzgor (obrnemo kot v katerega bo potekala)
@@ -346,6 +352,8 @@ const firstPage = document.querySelector(".firstPage");
 const gamePage = document.querySelector(".gamePage");
 
 function openGame() {
+  gameClosed = false;
   firstPage.classList.remove("activePage");
   gamePage.classList.add("activePage");
+
 }
