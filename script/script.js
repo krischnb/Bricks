@@ -13,7 +13,7 @@ var lastTime = performance.now();
 const timer = new easytimer.Timer();
 
 // paddle vars
-var paddleHeight = 10;
+var paddleHeight = 16;
 var paddleWidth = 120;
 var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
@@ -22,10 +22,12 @@ var leftPressed = false;
 // ball vars
 var dx = Math.floor(Math.random() * 6) + 4;
 var dy = -8;
-var ballRadius = 15;
+var ballRadius = 25;
 var ballColor = "#0095DD";
-var x = paddleX - ballRadius + paddleWidth / 2;
-var y = canvasHeight - paddleHeight - 10 - ballRadius; 
+var x = canvasWidth / 2;
+var y = canvasHeight - 10 - paddleHeight - ballRadius;
+
+let ballRotation = 0;
 // startna Y pozicija zoge tocno na platformi,
 // paddle height + 10, ker je platforma za 10px odmaknjena od tal.
 
@@ -35,7 +37,8 @@ const blueBloon = new Image();
 const yellowBloon = new Image();
 const greenBloon = new Image();
 const popBloon = new Image();
-const rock = new Image();
+const ballImg= new Image();
+const paddleImg = new Image();
 
 // flag, ko zoga pada, pomeni da smo zgubili, uporabno za animacijo da gre zoga pod platformo
 var pada = false;
@@ -44,21 +47,23 @@ var pada = false;
 var gameStarted = false;
 
 // flag, da igra ni prikazana
-var gameClosed = true;
+var gameClosed = false;
 
 redBloon.src = "assets/redBloon.png";
 blueBloon.src = "assets/blueBloon.png";
 yellowBloon.src = "assets/yellowBloon.png";
 greenBloon.src = "assets/greenBloon.png";
 popBloon.src = "assets/pop.png";
-rock.src = "assets/rock.png";
+ballImg.src = "assets/shuriken.png";
+paddleImg.src = "assets/paddle.png";
 
 redBloon.onload = imageLoaded;
 blueBloon.onload = imageLoaded;
 yellowBloon.onload = imageLoaded;
 greenBloon.onload = imageLoaded;
 popBloon.onload = imageLoaded;
-rock.onload = imageLoaded;
+ballImg.onload = imageLoaded;
+paddleImg.onload = imageLoaded;
 
 let imagesLoaded = 0;
 
@@ -77,8 +82,6 @@ function resetValues() {
   score = 0;
   gameOver = false;
   gamePaused = false;
-  paddleHeight = 10;
-  paddleWidth = 120;
   paddleX = (canvasWidth - paddleWidth) / 2;
   rightPressed = false;
   leftPressed = false;
@@ -88,6 +91,8 @@ function resetValues() {
   y = canvasHeight - (paddleHeight + 10 + ballRadius);
   pada = false;
   gameStarted = false;
+
+  ballRotation = 0; // resetira rotacijo zoge, pred igranjem
 
   // button reset
   playBtn.disabled = false;
@@ -121,21 +126,27 @@ const totalBricksWidth =
 const brickOffsetLeft = (canvasWidth - totalBricksWidth) / 2; // formula za centrirat vrstico bricksev
 
 function drawBall() {
-  ctx.beginPath();
-  ctx.drawImage(rock, x, y, ballRadius*2, ballRadius*2);
-  ctx.closePath();
+  ctx.save(); // Save the current drawing state
+
+  // Move canvas origin to center of ball
+  ctx.translate(x, y);
+
+  // Update rotation angle based on horizontal speed
+  ballRotation += 0.05 * dx;
+
+  // Rotate the canvas
+  ctx.rotate(ballRotation);
+
+  // Draw the ball centered at 0,0 (after translation)
+  ctx.drawImage(ballImg, -ballRadius, -ballRadius, ballRadius * 2, ballRadius * 2);
+  
+  ctx.restore(); // Restore original canvas state
 }
 
 function drawPaddle() {
   ctx.beginPath();
-  ctx.rect(
-    paddleX,
-    canvas.height - paddleHeight - 10,
-    paddleWidth,
-    paddleHeight
-  );
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
+  // ctx.rect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
+  ctx.drawImage(paddleImg, paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
   ctx.closePath();
 }
 
@@ -249,6 +260,64 @@ function collisionDetection() {
     youWin();
   }
 }
+// // collision detection tudi za levo in desno stran balonov
+// function collisionDetection() {
+//   let collided = false;
+
+//   for (var c = 0; c < brickColumnCount; c++) {
+//     for (var r = 0; r < brickRowCount; r++) {
+//       let b = bricks[c][r];
+
+//       if (b.status === 1) {
+//         // Check if the ball intersects this brick (AABB style)
+//         if (
+//           x + ballRadius > b.x &&
+//           x - ballRadius < b.x + brickWidth &&
+//           y + ballRadius > b.y &&
+//           y - ballRadius < b.y + brickHeight
+//         ) {
+//           // Basic hit — figure out direction
+
+//           // Get center of the ball
+//           let ballCenterX = x;
+//           let ballCenterY = y;
+
+//           // Calculate overlap on each axis
+//           let overlapLeft = ballCenterX - (b.x);
+//           let overlapRight = (b.x + brickWidth) - ballCenterX;
+//           let overlapTop = ballCenterY - (b.y);
+//           let overlapBottom = (b.y + brickHeight) - ballCenterY;
+
+//           let minOverlapX = Math.min(overlapLeft, overlapRight);
+//           let minOverlapY = Math.min(overlapTop, overlapBottom);
+
+//           // Determine bounce direction
+//           if (minOverlapX < minOverlapY) {
+//             dx = -dx; // Side hit
+//           } else {
+//             dy = -dy; // Top or bottom hit
+//           }
+
+//           b.status = 0;
+//           score++;
+//           poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() });
+//           drawScore();
+//           playPopSound();
+//           collided = true;
+//         }
+//       }
+//     }
+//   }
+
+//   if (score === brickRowCount * brickColumnCount) {
+//     gamePaused = true;
+//     gameStarted = false;
+//     timer.stop();
+//     youWin();
+//   }
+// }
+
+
 
 function drawScore() {
   document.getElementById("scoreVal").textContent = score;
@@ -314,9 +383,9 @@ function draw() {
   if (y + dy < ballRadius) {
     // ce se dotakne zida, obrnemo smer
     dy = -dy;
-  } else if (y + dy > canvas.height - paddleHeight - ballRadius - 10) {
+  } else if (y + dy > canvas.height - paddleHeight - ballRadius) {
     // ce se zoga nahaja v levelu platforme
-    if (x + ballRadius > paddleX && x +ballRadius < paddleX + paddleWidth) {
+    if (x > paddleX && x < paddleX + paddleWidth) {
       // ce se zoga med zacetkom in koncom platforme
       dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
       dy = -dy; // bo sla zoga navzgor (obrnemo kot v katerega bo potekala)

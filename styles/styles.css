@@ -39,6 +39,7 @@ html, body{
     position: relative;
     border-radius: 10px;
     background-color: rgba(222, 217, 207, 0.85);
+    height: 700px;
 }
 .pauseMsg{
     display: none;
