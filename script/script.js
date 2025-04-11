@@ -392,9 +392,11 @@ function draw() {
     dy = -dy;
   } else if (y + dy > canvas.height - paddleHeight - ballRadius) {
     // ce se zoga nahaja v levelu platforme
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      // ce se zoga med zacetkom in koncom platforme
-      dx = 12 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
+
+    // if (x + dx > paddleX && x + dx < paddleX + paddleWidth){
+
+    if ((x + dx) + ballRadius > paddleX && (x + dx) - ballRadius < paddleX + paddleWidth) { // ce se zoga odbije od platforme, x + dx = nasledna pozicija zoge
+      dx = 8 * ((x - (paddleX + paddleWidth / 2)) / paddleWidth); // razlicn odboj, nimm blage kku tu deluje
       dy = -dy; // bo sla zoga navzgor (obrnemo kot v katerega bo potekala)
       playShurikenBounce();
     } else {
