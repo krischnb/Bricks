@@ -21,12 +21,16 @@
 
     <div id="leaderboardOverlay" class="leaderboard-overlay hideModal">
         <div class="leaderboard-modal" id="leaderboardModal">
-            <button id="closeLeaderboardBtn" class="close-btn">×</button>
-            <h2>Leaderboard</h2>
-            <p>Note: Displays only the best stats of each player.</p>
-            <div class="lineSeperate"></div>
+            <button id="closeLeaderboardBtn" class="close-btn" onclick="closeLeaderboardModal()">×</button>
+            <div class="headerModal">
+                <h2>Leaderboard</h2>
+                <p>Note: Displays only the best stats of each player.</p>
+                <div class="lineSeperate"></div>
+            </div>
             <div id="leaderboardContainer"></div>
-            
+            <div class="footerModal">
+                <button class="close-btn2" onclick="closeLeaderboardModal()">Close</button>
+            </div>
         </div>
     </div>
 

@@ -65,8 +65,6 @@ function closeLeaderboardModal() {
     document.getElementById('leaderboardOverlay').classList.add('hideModal');
 }
 
-document.getElementById('closeLeaderboardBtn').addEventListener('click', closeLeaderboardModal);
-
 // ce kliknes ven, zapre modal
 document.getElementById('leaderboardOverlay').addEventListener('click', (e) => {
     if (e.target.id === 'leaderboardOverlay') {

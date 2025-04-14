@@ -89,6 +89,10 @@
     margin-top: 20px;
     font-family: 'Segoe UI', sans-serif;
     font-size: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 75%;
+    align-content: start;
 }
 .leaderboard-overlay {
     position: fixed;
@@ -102,7 +106,6 @@
     align-items: center;
     z-index: 9999;
 }
-
 .leaderboard-modal {
     background-color: rgb(255, 255, 255);
     padding: 25px;
@@ -111,8 +114,27 @@
     min-width: 500px;
     position: relative;
     box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    overflow-y: auto;
-    overflow-x: hidden;
+    animation: popupShow 0.3s ease forwards; 
+    transform-origin: center center;
+}
+@keyframes popupShow { /* Sweet alert - replica animation */
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    45% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    80% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.headerModal{
+    height: 15%;
 }
 .close-btn {
     position: absolute;
@@ -154,4 +176,24 @@
     margin-top: 5px;
     margin-bottom: 10px;
     color: rgb(84, 84, 84);
+}
+.footerModal{
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.close-btn2{
+    height: 80%;
+    width: 250px;
+    border: none;
+    background-color: rgb(0, 149, 221);
+    border-radius: 100px;
+    font-size: 25px;
+    color: white;
+    transition-duration: 0.2s;
+}
+.close-btn2:hover{
+    background-color: #264f85;
+    transition-duration: 0.2s;
 }
