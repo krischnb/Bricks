@@ -19,13 +19,23 @@ var paddleX = (canvasWidth - paddleWidth) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
+
 // ball vars
-var dx = Math.floor(Math.random() * 4) + 4;
-var dy = -8;
+
+function randomStart() { // 50/50 moznost ce se zoga servira levo al desno... random hitrosti zoge
+  var r = Math.floor(Math.random() * 2);
+  if (r === 1)
+    return -8;
+  else
+    return 8;
+}
+var dx = randomStart(); // default hitrost:  8 ali -8
+var dy = -8; // default hitrost
 var ballRadius = 25;
 var ballColor = "#0095DD";
 var x = canvasWidth / 2;
 var y = canvasHeight - 10 - paddleHeight - ballRadius;
+var gameMode = "Medium"; // Hitrost zoge
 
 let ballRotation = 0;
 // startna Y pozicija zoge tocno na platformi,
@@ -37,7 +47,7 @@ const blueBloon = new Image();
 const yellowBloon = new Image();
 const greenBloon = new Image();
 const popBloon = new Image();
-const ballImg= new Image();
+const ballImg = new Image();
 const paddleImg = new Image();
 
 // flag, ko zoga pada, pomeni da smo zgubili, uporabno za animacijo da gre zoga pod platformo
@@ -48,6 +58,9 @@ var gameStarted = false;
 
 // flag, da igra ni prikazana
 var gameClosed = true;
+
+// flag, da je to prva igra
+var firstGame = true;
 
 redBloon.src = "assets/redBloon.png";
 blueBloon.src = "assets/blueBloon.png";
@@ -72,12 +85,11 @@ function imageLoaded() {
   imagesLoaded++;
   if (imagesLoaded === 7) {
     // kadar so vse slike nalozene, se zacne game loop
-    
+
     initBricks();
     requestAnimationFrame(draw);
   }
 }
-
 function resetValues() {
   score = 0;
   gameOver = false;
@@ -85,8 +97,7 @@ function resetValues() {
   paddleX = (canvasWidth - paddleWidth) / 2;
   rightPressed = false;
   leftPressed = false;
-  dx = Math.floor(Math.random() * 4) + 4;
-  dy = -8;
+  setBallSpeed(gameMode);
   x = canvasWidth / 2;
   y = canvasHeight - (paddleHeight + 10 + ballRadius);
   pada = false;
@@ -131,13 +142,13 @@ function drawBall() {
   ctx.translate(x, y); // v tej tocki se zacne canvas (temporary, po temu damo restore() )
 
   // kot zoge je odvisen od horizontalne hitrosti, vecji kot je bolj hitro se vrti
-  if(gameStarted) // zoga se bo vrtela sam med igro
+  if (gameStarted) // zoga se bo vrtela sam med igro
     ballRotation += 0.05 * dx;
 
   ctx.rotate(ballRotation);
   // zogo narisemo v tocko (0,0).... zato ker to je translated canvas, v bistvu ga risemo v (x - ballRadius, y - ballRadius)
   ctx.drawImage(ballImg, -ballRadius, -ballRadius, ballRadius * 2, ballRadius * 2);
-  
+
   ctx.restore();
 }
 
@@ -223,93 +234,24 @@ function drawBricks() {
   // zbrise elemente po 250ms
 }
 
-function playPopSound() {
-  const sound = new Audio("assets/popSound.mp3");
-  sound.play();
-}
-function playShurikenThrow(){
-  const shurikenThrow = new Audio("assets/shurikenThrow.mp3");
-  shurikenThrow.play();
-}
-function playShurikenHit(){
-  const shurikenHit = new Audio("assets/shurikenHit.mp3");
-  shurikenHit.play();
-}
-function playShurikenBounce(){
-  const shurikenBounce = new Audio("assets/shurikenBounce.mp3");
-  shurikenBounce.play();
-}
-
-// function collisionDetection() {
-//   for (var c = 0; c < brickColumnCount; c++) {
-//     for (var r = 0; r < brickRowCount; r++) {
-//       let b = bricks[c][r];
-//       if (
-//         b.status === 1 &&
-//         x > b.x &&
-//         x < b.x + brickWidth &&
-//         y > b.y &&
-//         y < b.y + brickHeight
-//       ) {
-//         dy = -dy;
-//         b.status = 0;
-//         score++;
-//         poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() }); // shrani pocen balon
-
-//         drawScore();
-//         playPopSound();
-//       }
-//     }
-//   }
-
-//   if (score === brickRowCount * brickColumnCount) {
-//     gamePaused = true;
-//     gameStarted = false;
-//     timer.stop();
-//     youWin();
-//   }
-// }
-// collision detection tudi za levo in desno stran balonov
 function collisionDetection() {
-
   for (var c = 0; c < brickColumnCount; c++) {
     for (var r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
+      if (
+        b.status === 1 &&
+        x > b.x &&
+        x < b.x + brickWidth &&
+        y > b.y &&
+        y < b.y + brickHeight
+      ) {
+        dy = -dy;
+        b.status = 0;
+        score++;
+        poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() }); // shrani pocen balon
 
-      if (b.status === 1) {
-        // Check if the ball intersects this brick (AABB style)
-        if (
-          x + ballRadius > b.x && x - ballRadius < b.x + brickWidth &&
-          y + ballRadius > b.y && y - ballRadius < b.y + brickHeight
-        ) {
-          // Basic hit — figure out direction
-
-          // Get center of the ball
-          let ballCenterX = x;
-          let ballCenterY = y;
-
-          // Calculate overlap on each axis
-          let overlapLeft = ballCenterX - (b.x);
-          let overlapRight = (b.x + brickWidth) - ballCenterX;
-          let overlapTop = ballCenterY - (b.y);
-          let overlapBottom = (b.y + brickHeight) - ballCenterY;
-
-          let minOverlapX = Math.min(overlapLeft, overlapRight);
-          let minOverlapY = Math.min(overlapTop, overlapBottom);
-
-          // Determine bounce direction
-          if (minOverlapX < minOverlapY) {
-            dx = -dx; // Side hit
-          } else {
-            dy = -dy; // Top or bottom hit
-          }
-
-          b.status = 0;
-          score++;
-          poppedBalloons.push({ x: b.x, y: b.y, time: performance.now() });
-          drawScore();
-          playPopSound();
-        }
+        drawScore();
+        playPopSound();
       }
     }
   }
@@ -322,8 +264,6 @@ function collisionDetection() {
   }
 }
 
-
-
 function drawScore() {
   document.getElementById("scoreVal").textContent = score;
 }
@@ -333,7 +273,7 @@ const pauseBtn = document.querySelector(".pauseBtn");
 
 const pauseMsg = document.querySelector(".pauseMsg");
 function gamePause() {
-  if(gameClosed) return;
+  if (gameClosed) return;
   gamePaused = !gamePaused;
 
   if (gamePaused) {
@@ -349,7 +289,7 @@ function gamePause() {
   }
 }
 function gameStart() {
-  if(gameClosed) return; // ce igra ni prikazana, ne mores jo zacet
+  if (gameClosed) return; // ce igra ni prikazana, ne mores jo zacet
   playBtn.disabled = true;
   pauseBtn.disabled = false;
   gameStarted = true;
@@ -368,7 +308,7 @@ function draw() {
   if (gamePaused) return;
 
   let now = performance.now();
-  let deltaTime = (now - lastTime) / (1000 / 60);
+  let deltaTime = (now - lastTime) / (frameTime);
   lastTime = now;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -409,7 +349,7 @@ function draw() {
       // ko se blizamo dnu, se hitrost povecuje
       y += 0.1;
     } else {
-      playShurikenHit(); 
+      playShurikenHit();
       y = canvas.height - ballRadius;
       gamePaused = true;
       gameStarted = false;
@@ -431,9 +371,85 @@ function draw() {
 const firstPage = document.querySelector(".firstPage");
 const gamePage = document.querySelector(".gamePage");
 
+
 function openGame() {
-  gameClosed = false;
   firstPage.classList.remove("activePage");
   gamePage.classList.add("activePage");
 
+  setTimeout(() => {
+    gameClosed = false;
+  }, 100);
+}
+function openMenu() {
+  firstPage.classList.add("activePage");
+  gamePage.classList.remove("activePage");
+
+  document.querySelector(".newGame").textContent = "Play again"; // oznacimo, da ni vec prva igra, ce gremo nazaj v menu
+  firstGame = false;
+  gameClosed = true;
+  gameStarted = false;
+}
+
+// navigacija gumbu - menu
+const buttons = document.querySelectorAll('.btnContMain'); // vsi gumbi ( imajo isti class )
+let currentIndex = 0;
+
+buttons[currentIndex].classList.add('activeBtn'); // po defaultu prvi gumb je aktiviran
+
+function setActive(index) {
+  buttons.forEach((btn, i) => { // gre skozi vse gumbe, odstrani aktiven class usem razen tistim, ki je aktiviran (se ujema njegov index)
+    btn.classList.toggle('activeBtn', i === index);
+  });
+  currentIndex = index;
+  playButtonActive(); // ko je selectan nov gumb, se predvaja zvok
+}
+
+document.addEventListener('keydown', (e) => { // event listener, menjeva aktivnih gumbov z arrow keys
+  if (e.key === 'ArrowDown' || e.key === 'Tab') {
+    e.preventDefault();
+    currentIndex = (currentIndex + 1) % buttons.length;
+    setActive(currentIndex);
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+    setActive(currentIndex);
+  }
+  if (e.key === 'Enter' && gameClosed) { // ce pritisnes enter na aktiven gumb, bo simuliralo klik z misko, aktivirane bodo .onclick("") metode
+    const button = buttons[currentIndex].querySelector('button');
+    if (button)
+      playButtonClick();
+    setTimeout(() => {
+      button.click();
+    }, 10);
+  }
+});
+
+// hover
+buttons.forEach((btn, i) => {
+  btn.addEventListener('mouseenter', () => {
+    setActive(i); // gre skozi vse gumbe, nastavi aktivenga tistega, katerega hoverjamo, drugim odstrani aktiven class
+  });
+});
+
+// difficulty, metoda, ki spreminja hitrost glede gamemoda
+function setBallSpeed(difficulty) {
+  switch (difficulty) {
+    case 'Easy':
+      dx = randomStart() * 0.6; // Reduce the speed for easy
+      dy = -5; // Slow the ball down
+      break;
+    case 'Medium':
+      dx = randomStart(); // Default speed for medium
+      dy = -8; // Default speed for medium
+      break;
+    case 'Hard':
+      dx = randomStart() * 1.6; // Increase the speed for hard
+      dy = -13; // Faster ball on hard
+      break;
+    default:
+      dx = randomStart(); // Default speed for unrecognized difficulty
+      dy = -8;
+      break;
+  }
 }

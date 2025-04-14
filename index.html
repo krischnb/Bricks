@@ -19,25 +19,36 @@
     <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()">
     <img src="assets/oblak6.png" id="oblak6" alt="oblak">
 
+    <div id="leaderboardOverlay" class="leaderboard-overlay hideModal">
+        <div class="leaderboard-modal" id="leaderboardModal">
+            <button id="closeLeaderboardBtn" class="close-btn">×</button>
+            <h2>Leaderboard</h2>
+            <p>Note: Displays only the best stats of each player.</p>
+            <div class="lineSeperate"></div>
+            <div id="leaderboardContainer"></div>
+            
+        </div>
+    </div>
+
     <div class="glavni">
         <div class="firstPage activePage">
             <div class="title">
                 Balloon pop
             </div>
             <div class="mainMenu">
-                <div class="btnContMain">
+                <div class="btnContMain" tabindex="0">
                     <img src="assets/redBloon.png" alt="bloon">
-                    <button class="newGame" onclick="openGame()">New game</button>
+                    <button class="newGame" onclick="newUser()">New game</button>
                 </div>
-                <div class="btnContMain">
+                <div class="btnContMain" tabindex="0">
                     <img src="assets/blueBloon.png" alt="bloon">
-                    <button class="resumeGame">Resume game</button>
+                    <button class="resumeGame" onclick="rules()">Info</button>
                 </div>
-                <div class="btnContMain">
+                <div class="btnContMain" tabindex="0">
                     <img src="assets/greenBloon.png">
-                    <button class="infoMain">Info</button>
+                    <button class="infoMain" onclick="showLeaderboardModal()">Leaderboard</button>
                 </div>
-                <div class="btnContMain">
+                <div class="btnContMain" tabindex="0">
                     <img src="assets/yellowBloon.png">
                     <button class="settingsMain">Settings</button>
                 </div>
@@ -52,6 +63,12 @@
                 <div id="timer">
                     Time: <span class="seconds">0.0</span> s
                 </div>
+                <div id="name">
+                    Name: <span class="nameVal"></span>
+                </div>
+                <div id="gameMode">
+                    Gamemode: <span class="gamemodeVal">Medium</span>
+                </div>
             </div>
             <div class="gamePanel">
                 <canvas id="myCanvas" width="1000" height="700"></canvas>
@@ -63,13 +80,16 @@
             <div class="btnCont">
                 <button class="playBtn" onclick="gameStart()">Play</button>
                 <button class="pauseBtn" disabled onclick="gamePause()">Pause</button>
-                <button class="rules" onclick="rules()">Rules</button>
+                <button class="difficultyBtn" onclick="selectDifficulty()">Difficulty</button>
+                <button onclick="openMenu()">Back</button>
             </div>
         </div>
     </div>
 
     <script src="script/script.js"></script>
     <script src="script/event.js"></script>
+    <script src="script/sound.js"></script>
+    <script src="script/leaderBoard.js"></script>
     <script src="script/alert.js"></script>
 
 

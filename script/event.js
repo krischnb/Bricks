@@ -33,8 +33,9 @@ let decimalSeconds;
 
 timer.addEventListener('secondTenthsUpdated', function () {
     const time = timer.getTimeValues();
-    decimalSeconds = (time.seconds + time.secondTenths / 10).toFixed(1);
-    document.querySelector('.seconds').textContent = decimalSeconds;
+    const totalSeconds = time.minutes * 60 + time.seconds + time.secondTenths / 10;
+    decimalSeconds = totalSeconds.toFixed(1);
+    document.querySelector('.seconds').textContent = decimalSeconds; 
 });
 
 canvas.addEventListener("mousedown", () => mouseHeld = true);
