@@ -381,6 +381,8 @@ function openGame() {
   }, 100);
 }
 function openMenu() {
+  if(gameClosed) return;
+
   firstPage.classList.add("activePage");
   gamePage.classList.remove("activePage");
 
@@ -422,6 +424,12 @@ document.addEventListener('keydown', (e) => { // event listener, menjeva aktivni
     setTimeout(() => {
       button.click();
     }, 10);
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    openMenu();
   }
 });
 

@@ -86,6 +86,7 @@ function newUser() {
         footer: '<p class="noteNewUser">Note: Leaving the input field empty will give player a default username.</p>', // prikazano pod alertom
         showCancelButton: true,
         confirmButtonText: 'Start Game',
+        focusConfirm: false, // da ne dobi confirm button fokusa, ampak ga dobi input
         preConfirm: () => {
             const input = document.querySelector(".inputNewUser");
             return input ? input.value : '';

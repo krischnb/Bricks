@@ -1,93 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Bloon Pop</title>
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="styles/first.css">
-    <link rel="stylesheet" href="styles/clouds.css">
-    <link rel="icon" type="image/png" href="assets/FavIcon.png">
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/first.css" />
+    <link rel="stylesheet" href="styles/clouds.css" />
+    <link rel="stylesheet" href="styles/leaderboard.css" />
+    <link rel="icon" type="image/png" href="assets/FavIcon.png" />
     <script src="https://cdn.jsdelivr.net/npm/easytimer.js@4.5.4/dist/easytimer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+  </head>
 
-<body>
-    <img src="assets/oblak1.png" id="oblak1" alt="oblak">
-    <img src="assets/oblak2.png" id="oblak2" alt="oblak">
-    <img src="assets/oblak3.png" id="oblak3" alt="oblak">
-    <img src="assets/oblak4.png" id="oblak4" alt="oblak">
-    <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()">
-    <img src="assets/oblak6.png" id="oblak6" alt="oblak">
+  <body>
+    <img src="assets/oblak1.png" id="oblak1" alt="oblak" />
+    <img src="assets/oblak2.png" id="oblak2" alt="oblak" />
+    <img src="assets/oblak3.png" id="oblak3" alt="oblak" />
+    <img src="assets/oblak4.png" id="oblak4" alt="oblak" />
+    <img src="assets/oblak5.png" id="oblak5" alt="oblak" onclick="credits()" />
+    <img src="assets/oblak6.png" id="oblak6" alt="oblak" />
 
     <div id="leaderboardOverlay" class="leaderboard-overlay hideModal">
-        <div class="leaderboard-modal" id="leaderboardModal">
-            <button id="closeLeaderboardBtn" class="close-btn" onclick="closeLeaderboardModal()">×</button>
-            <div class="headerModal">
-                <h2>Leaderboard</h2>
-                <p>Note: Displays only the best stats of each player.</p>
-                <div class="lineSeperate"></div>
-            </div>
-            <div id="leaderboardContainer"></div>
-            <div class="footerModal">
-                <button class="close-btn2" onclick="closeLeaderboardModal()">Close</button>
-            </div>
+      <div class="leaderboard-modal" id="leaderboardModal">
+        <button
+          id="closeLeaderboardBtn"
+          class="close-btn"
+          onclick="closeLeaderboardModal()"
+          title="close leaderboard"
+        >
+          ×
+        </button>
+        <div class="headerModal">
+          <h2>Leaderboard</h2>
+          <p>Note: Displays only the best stats of each player.</p>
+          <div class="lineSeperate"></div>
         </div>
+        <div id="leaderboardContainer"></div>
+        <div class="footerModal">
+          <button class="close-btn2" onclick="closeLeaderboardModal()">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="glavni">
-        <div class="firstPage activePage">
-            <div class="title">
-                Balloon pop
-            </div>
-            <div class="mainMenu">
-                <div class="btnContMain" tabindex="0">
-                    <img src="assets/redBloon.png" alt="bloon">
-                    <button class="newGame" onclick="newUser()">New game</button>
-                </div>
-                <div class="btnContMain" tabindex="0">
-                    <img src="assets/blueBloon.png" alt="bloon">
-                    <button class="resumeGame" onclick="rules()">Info</button>
-                </div>
-                <div class="btnContMain" tabindex="0">
-                    <img src="assets/greenBloon.png">
-                    <button class="infoMain" onclick="showLeaderboardModal()">Leaderboard</button>
-                </div>
-                <div class="btnContMain" tabindex="0">
-                    <img src="assets/yellowBloon.png">
-                    <button class="settingsMain">Settings</button>
-                </div>
-            </div>
+      <div class="firstPage activePage">
+        <div class="title">Balloon pop</div>
+        <div class="mainMenu">
+          <div class="btnContMain" tabindex="0">
+            <img src="assets/redBloon.png" alt="bloon" />
+            <button class="newGame" onclick="newUser()">New game</button>
+          </div>
+          <div class="btnContMain" tabindex="0">
+            <img src="assets/blueBloon.png" alt="bloon" />
+            <button class="resumeGame" onclick="rules()">Info</button>
+          </div>
+          <div class="btnContMain" tabindex="0">
+            <img src="assets/greenBloon.png" />
+            <button class="infoMain" onclick="showLeaderboardModal()">
+              Leaderboard
+            </button>
+          </div>
+          <div class="btnContMain" tabindex="0">
+            <img src="assets/yellowBloon.png" />
+            <button class="settingsMain">Settings</button>
+          </div>
         </div>
+      </div>
 
-        <div class="gamePage" >
-            <div class="dataCont">
-                <div id="score">
-                    Score: <span id="scoreVal">0</span> / <span id="scoreMax"></span>
-                </div>
-                <div id="timer">
-                    Time: <span class="seconds">0.0</span> s
-                </div>
-                <div id="name">
-                    Name: <span class="nameVal"></span>
-                </div>
-                <div id="gameMode">
-                    Gamemode: <span class="gamemodeVal">Medium</span>
-                </div>
-            </div>
-            <div class="gamePanel">
-                <canvas id="myCanvas" width="1000" height="700"></canvas>
-                <div class="pauseMsg">
-                    <h1>Paused</h1>
-                    <span>Press the Pause button or 'P' to resume.</span>
-                </div>
-            </div>
-            <div class="btnCont">
-                <button class="playBtn" onclick="gameStart()">Play</button>
-                <button class="pauseBtn" disabled onclick="gamePause()">Pause</button>
-                <button class="difficultyBtn" onclick="selectDifficulty()">Difficulty</button>
-                <button onclick="openMenu()">Back</button>
-            </div>
+      <div class="gamePage">
+        <div class="dataCont">
+          <div id="score">
+            Score: <span id="scoreVal">0</span> / <span id="scoreMax"></span>
+          </div>
+          <div id="timer">Time: <span class="seconds">0.0</span> s</div>
+          <div id="name">Name: <span class="nameVal"></span></div>
+          <div id="gameMode">
+            Gamemode: <span class="gamemodeVal">Medium</span>
+          </div>
         </div>
+        <div class="gamePanel">
+          <canvas id="myCanvas" width="1000" height="700"></canvas>
+          <div class="pauseMsg">
+            <h1>Paused</h1>
+            <span>Press the Pause button or 'P' to resume.</span>
+          </div>
+        </div>
+        <div class="btnCont">
+          <button class="playBtn" onclick="gameStart()">Play</button>
+          <button class="pauseBtn" disabled onclick="gamePause()">Pause</button>
+          <button class="difficultyBtn" onclick="selectDifficulty()">
+            Difficulty
+          </button>
+          <button onclick="openMenu()">Back</button>
+        </div>
+      </div>
     </div>
 
     <script src="script/script.js"></script>
@@ -95,8 +102,5 @@
     <script src="script/sound.js"></script>
     <script src="script/leaderBoard.js"></script>
     <script src="script/alert.js"></script>
-
-
-</body>
-
+  </body>
 </html>

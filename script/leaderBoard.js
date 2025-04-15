@@ -54,8 +54,6 @@ function showLeaderboard() {
 
     container.innerHTML = html;
 }
-
-
 function showLeaderboardModal() {
     document.getElementById('leaderboardOverlay').classList.remove('hideModal');
     showLeaderboard(); // load data
